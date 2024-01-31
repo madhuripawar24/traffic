@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    #traffic-light {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .light {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #red { background-color: red; }
+    #yellow { background-color: yellow; }
+    #green { background-color: green; }
+
+    #timer {
+      font-size: 20px;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div id="traffic-light">
+  <div id="red" class="light"></div>
+  <div id="yellow" class="light"></div>
+  <div id="green" class="light"></div>
+  <div id="timer"></div>
+</div>
+
+<button onclick="toggleTrafficLight()"> Traffic Light </button>
+
+<script>
+  let isAutomatic = false;
+  let intervalId;
+  let activeLight;
+  let countdown = 30;
+
+  function toggleTrafficLight() {
+    clearInterval(intervalId); // Clear the automatic switching interval
+
+    if (isAutomatic) {
+      isAutomatic = false;
+    } else {
+      isAutomatic = true;
+      startAutomaticSwitching();
+    }
+
+    switchLights();
+  }
+
+  function switchLights() {
+    const redLight = document.getElementById('red');
+    const yellowLight = document.getElementById('yellow');
+    const greenLight = document.getElementById('green');
+    const timerDiv = document.getElementById('timer');
+
+    // Reset lights to default state
+    redLight.style.backgroundColor = 'gray';
+    yellowLight.style.backgroundColor = 'gray';
+    greenLight.style.backgroundColor = 'gray';
+
+    if (!isAutomatic) {
+      // Manual switching
+      redLight.style.backgroundColor = 'red';
+      activeLight = 'red';
+    } else {
+      // Automatic switching
+      if (countdown > 20) {
+        redLight.style.backgroundColor = 'red';
+        activeLight = 'red';
+      } else if (countdown > 10) {
+        yellowLight.style.backgroundColor = 'yellow';
+        activeLight = 'yellow';
+      } else {
+        greenLight.style.backgroundColor = 'green';
+        activeLight = 'green';
+      }
+    }
+
+    updateTimerDisplay(timerDiv, countdown);
+  }
+
+  function startAutomaticSwitching() {
+    intervalId = setInterval(() => {
+      countdown--;
+
+      if (countdown === 0) {
+        countdown = 30;
+      }
+
+      switchLights();
+    }, 1000); // Update every second
+  }
+
+  function updateTimerDisplay(timerDiv, seconds) {
+    timerDiv.textContent = `Time left: ${seconds}s`;
+  }
+
+  // Initial state on page load
+  switchLights();
+</script>
+
+</body>
+</html>
